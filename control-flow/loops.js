@@ -22,3 +22,22 @@ loopMeIn();
 
 // 2. While
 // 3. Do...While
+
+// USING LOOPS WITH ARRAYS
+// Create a function printElements(arr) that takes an array as an argument, and prints each of the elements in that array
+// eg printElements([1, 2, 3, 4]) will print
+// 1
+// 2
+// 3
+// 4
+
+// eg printElements(["hello", "world"]) will print
+// hello
+// world
+
+// eg printElements(["pineapples", "oranges", "apples", "bananas", "watermelons"]) will print
+// pineapples
+// oranges
+// apples
+// bananas
+// watermelons
