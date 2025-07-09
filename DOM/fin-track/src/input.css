@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "flyonui/src/vendor/flatpickr.css";
+
+.card {
+  width: calc(100% / 3);
+  @apply border py-6 px-4 rounded-lg;
+}
+
+.amount {
+  @apply font-bold text-2xl mb-2;
+}
+
+.form-element {
+  @apply py-2 px-4 border rounded-lg;
+}
