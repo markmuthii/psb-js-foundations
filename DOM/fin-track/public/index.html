@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fin Track</title>
+
+    <link rel="stylesheet" href="assets/css/flatpickr.min.css" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body class="h-screen pb-8">
+    <div class="container mx-auto">
+      <nav class="flex justify-between items-center p-5">
+        <h1 class="font-bold text-2xl">FIN-TRACK</h1>
+        <div class="flex items-center gap-2">
+          <img
+            src="https://oyster.ignimgs.com/mediawiki/apis.ign.com/avatar-the-last-airbender/b/b0/Aang_img.jpg"
+            alt="Avatar"
+            width="50px"
+            class="rounded-full"
+          />
+          <span>Welcome, John Wick</span>
+        </div>
+      </nav>
+
+      <main class="space-y-12">
+        <section class="analytics flex justify-between gap-12">
+          <div class="card border-orange-500">
+            <div id="balance" class="amount">20,000</div>
+            <div>Balance</div>
+          </div>
+          <div class="card border-green-500">
+            <div id="income" class="amount">50,000</div>
+            <div>Income</div>
+          </div>
+          <div class="card border-red-500">
+            <div id="expenses" class="amount">30,000</div>
+            <div>Expenses</div>
+          </div>
+        </section>
+
+        <section class="form">
+          <form class="flex flex-col max-w-[500px] mx-auto gap-4">
+            <input
+              type="text"
+              placeholder="Enter amount"
+              class="form-element"
+            />
+            <select name="" id="" class="form-element">
+              <option value="0">Select Transaction Type</option>
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+            <textarea
+              name=""
+              id=""
+              placeholder="Description"
+              rows="5"
+              class="form-element"
+            ></textarea>
+
+            <input
+              type="submit"
+              class="form-element bg-green-500 cursor-pointer"
+              value="Add Record"
+            />
+          </form>
+        </section>
+
+        <section class="transactions space-y-2">
+          <div class="table-top">
+            <form class="flex gap-4">
+              <select name="" id="" class="form-element">
+                <option value="all">All</option>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+              <input
+                type="text"
+                placeholder="Search by description"
+                class="form-element"
+              />
+              <input
+                type="text"
+                class="input max-w-fit form-element"
+                placeholder="YYYY-MM-DD to YYYY-MM-DD"
+                id="flatpickr-range"
+              />
+
+              <button
+                type="submit"
+                class="form-element bg-green-500 cursor-pointer"
+              >
+                Export
+              </button>
+            </form>
+          </div>
+
+          <div class="relative overflow-x-auto">
+            <table
+              class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+            >
+              <thead
+                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+              >
+                <tr>
+                  <th scope="col" class="px-6 py-3">#</th>
+                  <th scope="col" class="px-6 py-3">Amount</th>
+                  <th scope="col" class="px-6 py-3">Date</th>
+                  <th scope="col" class="px-6 py-3">Trx Type</th>
+                  <th scope="col" class="px-6 py-3">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
+                >
+                  <th
+                    scope="row"
+                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    1
+                  </th>
+                  <td class="px-6 py-4">1,000</td>
+                  <td class="px-6 py-4">07/07/2025</td>
+                  <td class="px-6 py-4">Income</td>
+                  <td class="px-6 py-4">Client payment</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="assets/js/flatpickr.js"></script>
+    <script src="assets/js/script.js"></script>
+
+    <script>
+      window.addEventListener("load", function () {
+        // Range Date Picker
+        flatpickr("#flatpickr-range", {
+          mode: "range",
+        });
+      });
+    </script>
+  </body>
+</html>
