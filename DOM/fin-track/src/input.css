@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "flyonui/src/vendor/flatpickr.css";
 
 .card {
   width: calc(100% / 3);
