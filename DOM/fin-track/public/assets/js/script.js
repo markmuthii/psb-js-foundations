@@ -3,25 +3,27 @@ let balance = 0; // Current balance
 let income = 0; // Total income
 let expenses = 0; // Total expenses
 
-let transactions = [];
+let transactions = []; // Array to store all transactions
 
-let filteredTransactions = [];
+let filteredTransactions = []; // Array to store filtered transactions for display
 
 // Get references to the DOM elements displaying the values
-const balanceEl = document.querySelector("#balance");
-const incomeEl = document.querySelector("#income");
-const expensesEl = document.querySelector("#expenses");
+const balanceEl = document.querySelector("#balance"); // Balance display element
+const incomeEl = document.querySelector("#income"); // Income display element
+const expensesEl = document.querySelector("#expenses"); // Expenses display element
 
 // Reference to the transaction form
 const addTransactionForm = document.querySelector("form");
 
+// Reference to the table body where transactions will be listed
 const transactionsTableBody = document.getElementById(
   "transactions-table-body"
 );
 
-const typeFilterEl = document.getElementById("filter-type");
-const descriptionFilterEl = document.getElementById("filter-description");
-const dateRangeFilterEl = document.getElementById("flatpickr-range");
+// References to filter input elements
+const typeFilterEl = document.getElementById("filter-type"); // Filter by type
+const descriptionFilterEl = document.getElementById("filter-description"); // Filter by description
+const dateRangeFilterEl = document.getElementById("flatpickr-range"); // Filter by date range
 
 // Loads the current balances into the DOM
 const loadBalances = () => {
@@ -30,6 +32,7 @@ const loadBalances = () => {
   expensesEl.textContent = expenses;
 };
 
+// Loads the transactions into the table in the DOM
 const loadTransactions = (transactions) => {
   let output = "";
 
@@ -52,13 +55,16 @@ const loadTransactions = (transactions) => {
     `;
   });
 
+  // If there are no transactions, show a message
   transactionsTableBody.innerHTML =
     output || "<p class='text-center'>No transactions</p>";
 };
 
+// Filters transactions based on type, description, and date range
 const filterTransactions = (type, description, dateRange) => {
   filteredTransactions = transactions;
 
+  // Filter by type if provided
   if (type) {
     filteredTransactions =
       type === "all"
@@ -70,6 +76,7 @@ const filterTransactions = (type, description, dateRange) => {
           });
   }
 
+  // Filter by description if provided
   if (description) {
     filteredTransactions = filteredTransactions.filter((transaction) => {
       return transaction.description
@@ -78,6 +85,7 @@ const filterTransactions = (type, description, dateRange) => {
     });
   }
 
+  // Filter by date range if provided
   if (dateRange) {
     const dates = dateRange.split(" to ");
 
@@ -101,6 +109,7 @@ const filterTransactions = (type, description, dateRange) => {
     });
   }
 
+  // Load the filtered transactions into the table
   loadTransactions(filteredTransactions);
 };
 
@@ -148,23 +157,19 @@ const formSubmitted = (e) => {
     expenses += amount;
   }
 
-  // income / expense
-  // Income / Expense
-
-  console.log(trxType[0].toUpperCase() + trxType.slice(1));
-
-  console.log(new Date().toLocaleDateString());
-
+  // Create a transaction object
   const transaction = {
-    id: transactions.length + 1,
-    date: new Date().toLocaleDateString(),
-    amount,
-    trxType: trxType[0].toUpperCase() + trxType.slice(1),
-    description,
+    id: transactions.length + 1, // Unique transaction ID
+    date: new Date().toLocaleDateString(), // Transaction date
+    amount, // Transaction amount
+    trxType: trxType[0].toUpperCase() + trxType.slice(1), // Transaction type (capitalized)
+    description, // Transaction description
   };
 
+  // Add transaction to the array
   transactions.push(transaction);
 
+  // Save updated balances and transactions to localStorage
   localStorage.setItem(
     "cashFlow",
     JSON.stringify({
@@ -182,13 +187,11 @@ const formSubmitted = (e) => {
   loadTransactions(transactions);
 };
 
-// Initialize balances on page load
+// Initialize balances and transactions on page load
 window.onload = () => {
-  const cashFlow = JSON.parse(localStorage.getItem("cashFlow"));
-  transactions = JSON.parse(localStorage.getItem("transactions") || "[]");
+  const cashFlow = JSON.parse(localStorage.getItem("cashFlow")); // Retrieve balances from localStorage
+  transactions = JSON.parse(localStorage.getItem("transactions") || "[]"); // Retrieve transactions from localStorage
   filteredTransactions = transactions;
-
-  console.log(transactions);
 
   balance = cashFlow?.balance || 0;
   income = cashFlow?.income || 0;
@@ -201,14 +204,18 @@ window.onload = () => {
 // Attach form submission handler
 addTransactionForm.onsubmit = formSubmitted;
 
+// Filter by type when the type filter changes
 typeFilterEl.onchange = (e) => {
   filterTransactions(e.target.value, descriptionFilterEl.value);
 };
 
+// Filter by description as the user types
 descriptionFilterEl.onkeyup = (e) => {
   filterTransactions(typeFilterEl.value, e.target.value);
 };
 
+// Filter by date range when the date range changes
+// Only filter if the range includes 'to' (i.e., a valid range is selected)
 dateRangeFilterEl.onchange = (e) => {
   if (e.target.value.includes("to")) {
     filterTransactions(
