@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="assets/css/flatpickr.min.css" />
     <link rel="stylesheet" href="assets/css/styles.css" />
   </head>
-  <body class="h-screen pb-8">
+  <body class="min-h-screen pb-8">
     <div class="container mx-auto">
       <nav class="flex justify-between items-center p-5">
         <h1 class="font-bold text-2xl">FIN-TRACK</h1>
@@ -26,15 +26,15 @@
       <main class="space-y-12">
         <section class="analytics flex justify-between gap-12">
           <div class="card border-orange-500">
-            <div id="balance" class="amount">20,000</div>
+            <div id="balance" class="amount">0</div>
             <div>Balance</div>
           </div>
           <div class="card border-green-500">
-            <div id="income" class="amount">50,000</div>
+            <div id="income" class="amount">0</div>
             <div>Income</div>
           </div>
           <div class="card border-red-500">
-            <div id="expenses" class="amount">30,000</div>
+            <div id="expenses" class="amount">0</div>
             <div>Expenses</div>
           </div>
         </section>
@@ -70,7 +70,7 @@
         <section class="transactions space-y-2">
           <div class="table-top">
             <form class="flex gap-4">
-              <select name="" id="" class="form-element">
+              <select name="" id="filter-type" class="form-element">
                 <option value="all">All</option>
                 <option value="income">Income</option>
                 <option value="expense">Expense</option>
@@ -79,6 +79,7 @@
                 type="text"
                 placeholder="Search by description"
                 class="form-element"
+                id="filter-description"
               />
               <input
                 type="text"
@@ -111,22 +112,7 @@
                   <th scope="col" class="px-6 py-3">Description</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr
-                  class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
-                >
-                  <th
-                    scope="row"
-                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
-                    1
-                  </th>
-                  <td class="px-6 py-4">1,000</td>
-                  <td class="px-6 py-4">07/07/2025</td>
-                  <td class="px-6 py-4">Income</td>
-                  <td class="px-6 py-4">Client payment</td>
-                </tr>
-              </tbody>
+              <tbody id="transactions-table-body"></tbody>
             </table>
           </div>
         </section>
