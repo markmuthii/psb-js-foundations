@@ -1,42 +1,47 @@
+// Main function to handle dashboard logic and user interactions
 const dashboardFuntionality = () => {
   // This script manages a simple financial tracker for balance, income, and expenses
+  // Variables to keep track of financial data
   let balance = 0; // Current balance
   let income = 0; // Total income
   let expenses = 0; // Total expenses
 
-  let transactions = []; // Array to store all transactions
+  // Array to store all transaction records
+  let transactions = [];
 
-  let filteredTransactions = []; // Array to store filtered transactions for display
+  // Array to store transactions after applying filters
+  let filteredTransactions = [];
 
-  // Get references to the DOM elements displaying the values
-  const balanceEl = document.querySelector("#balance"); // Balance display element
-  const incomeEl = document.querySelector("#income"); // Income display element
-  const expensesEl = document.querySelector("#expenses"); // Expenses display element
+  // Get references to the DOM elements that show balance, income, and expenses
+  const balanceEl = document.querySelector("#balance"); // Shows current balance
+  const incomeEl = document.querySelector("#income"); // Shows total income
+  const expensesEl = document.querySelector("#expenses"); // Shows total expenses
 
-  // Reference to the transaction form
+  // Reference to the form used to add new transactions
   const addTransactionForm = document.querySelector("form");
 
-  // Reference to the table body where transactions will be listed
+  // Reference to the table body where transaction records are displayed
   const transactionsTableBody = document.getElementById(
     "transactions-table-body"
   );
 
-  // References to filter input elements
-  const typeFilterEl = document.getElementById("filter-type"); // Filter by type
-  const descriptionFilterEl = document.getElementById("filter-description"); // Filter by description
-  const dateRangeFilterEl = document.getElementById("flatpickr-range"); // Filter by date range
+  // References to filter input elements for searching transactions
+  const typeFilterEl = document.getElementById("filter-type"); // Dropdown to filter by type
+  const descriptionFilterEl = document.getElementById("filter-description"); // Input to filter by description
+  const dateRangeFilterEl = document.getElementById("flatpickr-range"); // Input to filter by date range
 
-  // Loads the current balances into the DOM
+  // Updates the balance, income, and expenses shown on the page
   const loadBalances = () => {
     balanceEl.textContent = balance;
     incomeEl.textContent = income;
     expensesEl.textContent = expenses;
   };
 
-  // Loads the transactions into the table in the DOM
+  // Displays the list of transactions in the table
   const loadTransactions = (transactions) => {
     let output = "";
 
+    // Loop through each transaction and create a table row
     transactions.forEach((transaction, i) => {
       output += `
       <tr
@@ -62,10 +67,11 @@ const dashboardFuntionality = () => {
   };
 
   // Filters transactions based on type, description, and date range
+  // This helps users search for specific records
   const filterTransactions = (type, description, dateRange) => {
     filteredTransactions = transactions;
 
-    // Filter by type if provided
+    // Filter by type (income, expense, or all)
     if (type) {
       filteredTransactions =
         type === "all"
@@ -77,7 +83,7 @@ const dashboardFuntionality = () => {
             });
     }
 
-    // Filter by description if provided
+    // Filter by description text
     if (description) {
       filteredTransactions = filteredTransactions.filter((transaction) => {
         return transaction.description
@@ -86,23 +92,22 @@ const dashboardFuntionality = () => {
       });
     }
 
-    // Filter by date range if provided
+    // Filter by date range (if provided)
     if (dateRange) {
       const dates = dateRange.split(" to ");
-
       const [start, end] = dates;
 
       filteredTransactions = filteredTransactions.filter((transaction) => {
+        // Convert transaction date to Date object
         let [day, month, year] = transaction.date.split("/");
         month = parseInt(month) - 1;
-
         const trxDate = new Date(year, month, day);
 
+        // Convert filter start and end dates to Date objects
         const startDate = new Date(start);
         const endDate = new Date(end);
 
-        console.log({ startDate, endDate, trxDate });
-
+        // Check if transaction date is within the selected range
         return (
           trxDate.getTime() >= startDate.getTime() &&
           trxDate.getTime() <= endDate.getTime()
@@ -110,64 +115,65 @@ const dashboardFuntionality = () => {
       });
     }
 
-    // Load the filtered transactions into the table
+    // Show the filtered transactions in the table
     loadTransactions(filteredTransactions);
   };
 
-  // Handles form submission for adding a transaction
+  // Handles form submission for adding a new transaction
   const formSubmitted = (e) => {
-    e.preventDefault(); // Prevents default form submission behavior
+    e.preventDefault(); // Prevents page reload when form is submitted
     console.log("Form Submitted");
 
     // Get values from the form fields
-    const amount = parseInt(addTransactionForm[0].value); // Transaction amount
+    const amount = parseInt(addTransactionForm[0].value); // Amount entered by user
     const trxType = addTransactionForm[1].value; // Transaction type: 'income' or 'expense'
-    const description = addTransactionForm[2].value.trim(); // Transaction description
+    const description = addTransactionForm[2].value.trim(); // Description entered by user
 
-    // Validate amount
+    // Validate amount (must be a positive number)
     if (isNaN(amount) || amount < 1) {
       alert("Please enter a positive number in the amount field");
       return;
     }
 
-    // Validate transaction type
+    // Validate transaction type (must be selected)
     if (trxType == 0) {
       alert("Please select a transaction type");
       return;
     }
 
-    // Validate description
+    // Validate description (must not be empty)
     if (description == "") {
       alert("Please enter a description for the transaction");
       return;
     }
 
+    // Update balance and income/expenses based on transaction type
     if (trxType == "income") {
-      // If income, increase balance and income
+      // If income, add to balance and income
       balance += amount;
       income += amount;
     } else {
-      // If expense, check if balance is sufficient
+      // If expense, check if balance is enough
       if (balance < amount) {
         alert("Earn some money first");
         return;
       }
 
-      // Decrease balance and increase expenses
+      // Subtract from balance and add to expenses
       balance -= amount;
       expenses += amount;
     }
 
-    // Create a transaction object
+    // Create a transaction object to store the record
     const transaction = {
       id: transactions.length + 1, // Unique transaction ID
-      date: new Date().toLocaleDateString(), // Transaction date
+      date: new Date().toLocaleDateString(), // Today's date
       amount, // Transaction amount
-      trxType: trxType[0].toUpperCase() + trxType.slice(1), // Transaction type (capitalized)
+      trxType: trxType[0].toUpperCase() + trxType.slice(1), // Capitalize type
       description, // Transaction description
     };
 
-    // Add transaction to the array
+    // Add transaction to the list
     transactions.push(transaction);
 
     // Save updated balances and transactions to localStorage
@@ -182,28 +188,29 @@ const dashboardFuntionality = () => {
 
     localStorage.setItem("transactions", JSON.stringify(transactions));
 
-    // Update the DOM with new values
+    // Update the page with new values
     loadBalances();
-
     loadTransactions(transactions);
   };
 
-  // Initialize balances and transactions
-  const cashFlow = JSON.parse(localStorage.getItem("cashFlow")); // Retrieve balances from localStorage
-  transactions = JSON.parse(localStorage.getItem("transactions") || "[]"); // Retrieve transactions from localStorage
+  // Load balances and transactions from localStorage (if available)
+  const cashFlow = JSON.parse(localStorage.getItem("cashFlow")); // Get saved balances
+  transactions = JSON.parse(localStorage.getItem("transactions") || "[]"); // Get saved transactions
   filteredTransactions = transactions;
 
+  // Set initial values (or defaults if not found)
   balance = cashFlow?.balance || 0;
   income = cashFlow?.income || 0;
   expenses = cashFlow?.expenses || 0;
 
+  // Show initial balances and transactions
   loadBalances();
   loadTransactions(transactions);
 
-  // Attach form submission handler
+  // Attach form submission handler to add transaction form
   addTransactionForm.onsubmit = formSubmitted;
 
-  // Filter by type when the type filter changes
+  // Filter by type when the dropdown changes
   typeFilterEl.onchange = (e) => {
     filterTransactions(e.target.value, descriptionFilterEl.value);
   };
@@ -213,7 +220,7 @@ const dashboardFuntionality = () => {
     filterTransactions(typeFilterEl.value, e.target.value);
   };
 
-  // Filter by date range when the date range changes
+  // Filter by date range when the input changes
   // Only filter if the range includes 'to' (i.e., a valid range is selected)
   dateRangeFilterEl.onchange = (e) => {
     if (e.target.value.includes("to")) {
@@ -226,12 +233,13 @@ const dashboardFuntionality = () => {
   };
 };
 
-// Get reference to the main content element
+// Get reference to the main content area where pages are shown
 const contentElement = document.getElementById("content");
 
-// Get referenct to the nav items
+// Get reference to navigation menu items
 const navItems = document.getElementsByClassName("nav-item");
 
+// HTML content for the dashboard page (shows analytics, add form, and transactions)
 const dashboardContent = `
 
 <section class="analytics flex justify-between gap-12">
@@ -330,6 +338,7 @@ const dashboardContent = `
 
 `;
 
+// HTML content for the registration page
 const registerContent = `
 
 <section
@@ -378,6 +387,7 @@ const registerContent = `
 
 `;
 
+// HTML content for the login page
 const loginContent = `
 
 <section
@@ -407,24 +417,33 @@ const loginContent = `
 
 `;
 
+// Handles navigation menu clicks to switch between pages
 const linkClicked = (e) => {
+  // Show dashboard page and initialize its logic
   if (e.target.textContent.toLowerCase() === "dashboard") {
     contentElement.innerHTML = dashboardContent;
-
     dashboardFuntionality();
-  } else if (e.target.textContent.toLowerCase() === "register") {
+  }
+  // Show registration page
+  else if (e.target.textContent.toLowerCase() === "register") {
     contentElement.innerHTML = registerContent;
-  } else if (e.target.textContent.toLowerCase() === "login") {
+  }
+  // Show login page
+  else if (e.target.textContent.toLowerCase() === "login") {
     contentElement.innerHTML = loginContent;
-  } else {
+  }
+  // Show profile page (default)
+  else {
     contentElement.innerHTML = `<h1>Profile Page</h1>`;
   }
 };
 
+// Add click event listeners to all navigation menu items
 for (let navItem of navItems) {
   navItem.addEventListener("click", linkClicked);
 }
 
+// When the page loads, show the login page by default
 window.onload = () => {
   contentElement.innerHTML = loginContent;
 };
